@@ -34,4 +34,24 @@ router.post("/createRoom", auth, async (req, res) => {
   );
 });
 
+router.get("/joinRoom/:room_id", auth, async (req, res) => {
+  if (!req.params.room_id) {
+    return res.status(400).send({
+      Message: "Room id required",
+    });
+  }
+  db.query(
+    `INSERT INTO UserRoomDetails(room_id,user_id) values(${req.params.room_id},${req.user.user_id});`,
+    (error, result) => {
+      if (error) {
+        res.send({
+          Error: error,
+        });
+      } else {
+        res.send({ success: "Successfully joined the room" });
+      }
+    }
+  );
+});
+
 module.exports = router;
