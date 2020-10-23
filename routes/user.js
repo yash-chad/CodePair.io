@@ -1,12 +1,13 @@
-const { Router } = require("express");
-const { saltRounds, jwtSecret } = require("../config");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const router = Router();
 const db = require("../db/mysql");
+const { auth } = require("../middleware/auth");
+const { saltRounds, jwtSecret } = require("../config");
+const { Router } = require("express");
+const router = Router();
 
 // Get all users from the db
-router.get("/getUsers", (req, res) => {
+router.get("/getUsers", auth, (req, res) => {
   let sql = "SELECT * FROM user";
   db.query(sql, (err, result) => {
     if (err) res.send(err);
