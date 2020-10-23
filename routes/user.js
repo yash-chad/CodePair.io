@@ -61,6 +61,11 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", (req, res) => {
+  if (!req.body.email || !req.body.password) {
+    return res.send({
+      Error: "Please insert all fields",
+    });
+  }
   const email = req.body.email;
   const password = req.body.password;
 
