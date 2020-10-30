@@ -8,6 +8,7 @@ const app = express();
 const userRouter = require("./routes/user");
 const roomRouter = require("./routes/room");
 const notesRouter = require("./routes/notes");
+const pusherRouter = require("./routes/pusher");
 
 // body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +25,7 @@ app.use(cors());
 app.use("/api/users", userRouter);
 app.use("/api/room", roomRouter);
 app.use("/api/notes", notesRouter);
+app.use("/api/pusher", pusherRouter);
 
 app.listen("5000", () => {
   console.log("Server started on port 5000");
