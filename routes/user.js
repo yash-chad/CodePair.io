@@ -16,48 +16,56 @@ router.get("/getUsers", auth, (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-  if (
-    !req.body.first_name ||
-    !req.body.last_name ||
-    !req.body.email ||
-    !req.body.password
-  ) {
-    return res.send({
-      Error: "Please insert all fields",
-    });
-  }
-
-  const encryptedPassword = await bcrypt.hash(req.body.password, saltRounds);
-
-  const newUser = {
-    first_name: req.body.first_name,
-    last_name: req.body.last_name,
-    email: req.body.email,
-    phone: req.body.phone,
-    password: encryptedPassword,
-  };
-
-  let checkUserQuery = `SELECT count(*) AS 'count' FROM user WHERE email='${req.body.email}'`;
-  db.query(checkUserQuery, async (err, result) => {
-    // Checking if the user aldready exists
-    if (result[0].count) {
-      return res.status(401).send({
-        Error: "User Aldready exists, try logging in!!",
-      });
-    } else {
-      db.query("INSERT INTO user SET ?", newUser, (error, results) => {
-        if (error) {
-          res.status(400).send({
-            Error: error,
-          });
-        } else {
-          res.status(201).send({
-            success: "user registered sucessfully",
-          });
-        }
+  try {
+    if (
+      !req.body.first_name ||
+      !req.body.last_name ||
+      !req.body.email ||
+      !req.body.password
+    ) {
+      return res.send({
+        Error: "Please insert all fields",
       });
     }
-  });
+
+    const encryptedPassword = await bcrypt.hash(
+      req.body.password,
+      parseInt(saltRounds)
+    );
+
+    const newUser = {
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      email: req.body.email,
+      phone: req.body.phone,
+      password: encryptedPassword,
+    };
+
+    let checkUserQuery = `SELECT count(*) AS 'count' FROM user WHERE email='${req.body.email}'`;
+    db.query(checkUserQuery, async (err, result) => {
+      // Checking if the user aldready exists
+      if (result[0].count) {
+        return res.status(401).send({
+          Error: "User Aldready exists, try logging in!!",
+        });
+      } else {
+        db.query("INSERT INTO user SET ?", newUser, (error, results) => {
+          if (error) {
+            res.status(400).send({
+              Error: error,
+            });
+          } else {
+            res.status(201).send({
+              success: "user registered sucessfully",
+            });
+          }
+        });
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    res.send(e);
+  }
 });
 
 router.post("/login", (req, res) => {
