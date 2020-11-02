@@ -71,4 +71,28 @@ router.get("/getNotes", auth, (req, res) => {
   }
 });
 
+// Delete Note
+router.delete("/deleteNote", auth, (req, res) => {
+  if (!req.body.note_id) {
+    return res.send({
+      Error: "Please insert all fields",
+    });
+  } else {
+    db.query(
+      `DELETE FROM NOTES WHERE note_id=${req.body.note_id}`,
+      async (error, result) => {
+        if (error) {
+          return res.status(400).send({
+            Error: error,
+          });
+        } else {
+          return res.status(201).send({
+            success: "Note Deleted",
+          });
+        }
+      }
+    );
+  }
+});
+
 module.exports = router;
