@@ -12,6 +12,7 @@ router.get("/getRooms", auth, (req, res) => {
   });
 });
 
+// Create a new Room
 router.post("/createRoom", auth, async (req, res) => {
   if (!req.body.room_name) {
     return res.send({
@@ -50,6 +51,7 @@ router.post("/createRoom", auth, async (req, res) => {
   );
 });
 
+// Join room with id
 router.get("/joinRoom/:room_id", auth, async (req, res) => {
   if (!req.params.room_id) {
     return res.status(400).send({
@@ -65,6 +67,27 @@ router.get("/joinRoom/:room_id", auth, async (req, res) => {
         });
       } else {
         res.send({ success: "Successfully joined the room" });
+      }
+    }
+  );
+});
+
+// Returns all the participants in the room
+router.get("/getParticipants/:room_id", auth, async (req, res) => {
+  if (!req.params.room_id) {
+    return res.status(400).send({
+      Message: "Room id required",
+    });
+  }
+  db.query(
+    `SELECT u.first_name , u.last_name FROM user u, userRoomDetails ud WHERE room_id = ${req.params.room_id} AND u.user_id = ud.user_id;`,
+    (error, result) => {
+      if (error) {
+        res.send({
+          Error: error,
+        });
+      } else {
+        res.send(result);
       }
     }
   );
