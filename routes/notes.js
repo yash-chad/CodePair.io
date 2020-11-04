@@ -50,7 +50,7 @@ router.put("/updateNote", auth, async (req, res) => {
 });
 
 //Gives all notes by the specific user in the requeted room
-router.get("/getNotes", auth, (req, res) => {
+router.post("/getNotes", auth, (req, res) => {
   if (!req.body.room_id) {
     return res.send({
       Error: "Please insert all fields",
