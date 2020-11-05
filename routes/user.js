@@ -100,9 +100,11 @@ router.post("/login", (req, res) => {
               jwtSecret
             );
 
+            delete results[0].password;
             res.status(200).send({
               success: "Login sucessfull",
               token,
+              user: results[0],
             });
           } else {
             res.status(400).send({
