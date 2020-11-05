@@ -62,22 +62,30 @@ router.get("/joinRoom/:room_id", auth, async (req, res) => {
   db.query(
     `SELECT count(*) AS count FROM UserRoomDetails WHERE user_id="${req.user.user_id}" AND room_id="${req.params.room_id}"`,
     (error, result) => {
-      if (result[0].count) {
-        return res.send({ message: "User aldready exists in room" });
+      if (error) {
+        res.status(400).send({ Error: error });
       } else {
-        // Adding the user if it does not exists
-        db.query(
-          `INSERT INTO UserRoomDetails(room_id,user_id) values(${req.params.room_id},${req.user.user_id});`,
-          (error, result) => {
-            if (error) {
-              res.send({
-                Error: error,
-              });
-            } else {
-              res.send({ success: "Successfully joined the room" });
+        if (result[0].count) {
+          return res
+            .status(200)
+            .send({ message: "User aldready exists in room" });
+        } else {
+          // Adding the user if it does not exists
+          db.query(
+            `INSERT INTO UserRoomDetails(room_id,user_id) values(${req.params.room_id},${req.user.user_id});`,
+            (error, result) => {
+              if (error) {
+                res.status(400).send({
+                  Error: error,
+                });
+              } else {
+                res
+                  .status(200)
+                  .send({ success: "Successfully joined the room" });
+              }
             }
-          }
-        );
+          );
+        }
       }
     }
   );
