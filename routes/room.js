@@ -99,7 +99,7 @@ router.get("/getParticipants/:room_id", auth, async (req, res) => {
     });
   }
   db.query(
-    `SELECT u.first_name , u.last_name FROM user u, userRoomDetails ud WHERE room_id = ${req.params.room_id} AND u.user_id = ud.user_id;`,
+    `SELECT u.user_id ,u.first_name , u.last_name FROM user u, userRoomDetails ud WHERE room_id = ${req.params.room_id} AND u.user_id = ud.user_id;`,
     (error, result) => {
       if (error) {
         res.send({
@@ -112,4 +112,24 @@ router.get("/getParticipants/:room_id", auth, async (req, res) => {
   );
 });
 
+// Give the name/details of the room
+router.get("/getRoomName/:room_id", auth, async (req, res) => {
+  if (!req.params.room_id) {
+    return res.status(400).send({
+      Message: "Room id required",
+    });
+  }
+  db.query(
+    `SELECT room_name FROM room WHERE room_id=${req.params.room_id}`,
+    (error, result) => {
+      if (error) {
+        res.send({
+          Error: error,
+        });
+      } else {
+        res.send(result[0]);
+      }
+    }
+  );
+});
 module.exports = router;
