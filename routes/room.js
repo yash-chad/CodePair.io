@@ -132,4 +132,21 @@ router.get("/getRoomName/:room_id", auth, async (req, res) => {
     }
   );
 });
+
+//Returns the rooms you have been a part of
+router.get("/getMyRooms", auth, async (req, res) => {
+  db.query(
+    `SELECT * FROM room WHERE room_id IN (SELECT room_id FROM userRoomDetails ud WHERE user_id=${req.user.user_id}) `,
+    (error, result) => {
+      if (error) {
+        res.send({
+          Error: error,
+        });
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 module.exports = router;
