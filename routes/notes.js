@@ -57,7 +57,7 @@ router.post("/getNotes", auth, (req, res) => {
     });
   } else {
     db.query(
-      `SELECT data FROM NOTES WHERE user_id = ${req.user.user_id} AND room_id = ${req.body.room_id}`,
+      `SELECT * FROM NOTES WHERE user_id = ${req.user.user_id} AND room_id = ${req.body.room_id}`,
       async (error, result) => {
         if (error) {
           return res.status(400).send({
@@ -72,14 +72,14 @@ router.post("/getNotes", auth, (req, res) => {
 });
 
 // Delete Note
-router.delete("/deleteNote", auth, (req, res) => {
-  if (!req.body.note_id) {
+router.delete("/deleteNote/:note_id", auth, (req, res) => {
+  if (!req.params.note_id) {
     return res.send({
       Error: "Please insert all fields",
     });
   } else {
     db.query(
-      `DELETE FROM NOTES WHERE note_id=${req.body.note_id}`,
+      `DELETE FROM NOTES WHERE note_id=${req.params.note_id}`,
       async (error, result) => {
         if (error) {
           return res.status(400).send({
