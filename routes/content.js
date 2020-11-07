@@ -3,6 +3,26 @@ const router = Router();
 const { auth } = require("../middleware/auth");
 const db = require("../db/mysql");
 
+// Route to get Content from the db
+router.get("/getContent/:room_id", auth, async (req, res) => {
+  if (!req.params.room_id) {
+    return res.send({
+      Error: "Please insert room id",
+    });
+  }
+  db.query(
+    `SELECT text FROM PLAINTEXT WHERE ROOM_ID=${req.params.room_id}`,
+    (error, result) => {
+      if (error) {
+        return res.send({ Error: error });
+      } else {
+        if (!result.length) return res.send({ text: "" });
+        else return res.send(result[0]);
+      }
+    }
+  );
+});
+
 // A route for saving text Content to the db
 router.post("/saveContent", auth, async (req, res) => {
   if (!req.body.room_id || !req.body.text) {
