@@ -149,4 +149,28 @@ router.post("/verifyToken", async (req, res) => {
   }
 });
 
+router.post("/getCurrentUser", async (req, res) => {
+  try {
+    const token = req.body.token;
+    const decoded = await jwt.verify(token, jwtSecret);
+
+    await db.query(
+      `SELECT * FROM user WHERE user_id = ${decoded.user_id}`,
+      (error, result) => {
+        if (error || !result.length) {
+          throw error;
+        } else {
+          req.user = result[0];
+          delete result[0].password;
+          res.status(200).send({
+            user: result[0],
+          });
+        }
+      }
+    );
+  } catch (err) {
+    return res.status(400).send({ error: "Please Authenticate!" });
+  }
+});
+
 module.exports = router;
