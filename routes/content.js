@@ -71,4 +71,57 @@ router.post("/saveContent", auth, async (req, res) => {
   );
 });
 
+//Routr to set triggers
+router.get("/setTriggers", auth, (req, res) => {
+  try {
+    // INsert TRigger
+    let success_count = 0;
+    db.query(
+      `delimiter //
+  CREATE TRIGGER insert_check BEFORE INSERT ON PLAINTEXT
+         FOR EACH ROW
+         BEGIN
+              IF NEW.text = "" THEN
+          SIGNAL SQLSTATE '45000'
+                  SET MESSAGE_TEXT = "Oops! You cannot save Null Text";
+        END IF;
+         END;
+  // delimiter;`,
+      (error, result) => {
+        if (error) {
+          throw error;
+        } else {
+          success_count++;
+        }
+      }
+    );
+
+    // Update Trigger
+    db.query(
+      `delimiter //
+    CREATE TRIGGER update_check BEFORE UPDATE ON PLAINTEXT
+           FOR EACH ROW
+           BEGIN
+                IF NEW.text = "" THEN
+            SIGNAL SQLSTATE '45000'
+                    SET MESSAGE_TEXT = "Oops! You cannot save Null Text";
+          END IF;
+           END;
+    // delimiter ;`,
+      (error, result) => {
+        if (error) {
+          throw error;
+        } else {
+          success_count++;
+          if (success_count == 2)
+            res.send({ Success: "Triggers added successfully" });
+          else res.send({ Error: "Error ocured" });
+        }
+      }
+    );
+  } catch (e) {
+    res.send(error);
+  }
+});
+
 module.exports = router;
