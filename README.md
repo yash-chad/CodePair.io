@@ -1,6 +1,8 @@
 # CodePair.io [Link to the demo](https://www.youtube.com/watch?v=oFzY2v3ExkI) 
 
+<p align="center">
 ![](gif.gif)
+ </p>
 
 ## Problem Statement/ motivation:
 Lockdown phase has transformed almost everything into work from home which has been a huge challenge for everyone right from the students, teachers, and universities to developers, companies and what not? Be it collaborating for projects, interview process which is considered to be efficient if conducted one to one or be it the teaching learning process. It feels like a revolution of our century. Amidst all of the problems and challenges every individual is trying to figure the level best solution at an individual level. So Codepair.io is just an attempt from our side to solve this problem.
